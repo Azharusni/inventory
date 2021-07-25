@@ -1,5 +1,10 @@
 <?php
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
+
 
 Route::group([
 
@@ -15,3 +20,8 @@ Route::group([
     Route::post('me', [AuthController::class,'me']);
 
 });
+
+Route::apiResource('/employee',EmployeeController::class);
+Route::apiResource('/supplier',SupplierController::class);
+Route::apiResource('/category',CategoryController::class);
+Route::apiResource('/category',ProductController::class);
