@@ -20,6 +20,16 @@ class Notification {
         }).show();
     }
 
+    cart_delete(){
+        new Noty({
+            type:'success',
+            layout:'topRight',
+            text: 'Successfully Delete!',
+            timeout:1000,
+
+        }).show();
+    }
+
     alert(){
         new Noty({
             type:'alert',

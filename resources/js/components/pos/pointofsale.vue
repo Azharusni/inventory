@@ -38,10 +38,14 @@
                                 <tbody>
                                 <tr v-for="pro in carts" :key="pro.id">
                                     <td>{{pro.pro_name}}</td>
-                                    <td><input type="text" readonly="" :value="pro.pro_quantity" style="width:30px;"></td>
+                                    <td><input type="text" readonly="" :value="pro.pro_quantity" style="width:30px;">
+                                    <button @click.prevent="increment(pro.id)" class="btn btn-sm btn-success">+</button>
+                                    <button @click.prevent="decrement(pro.id)"class="btn btn-sm btn-danger" v-if="pro.pro_quantity >=2">-</button>
+                                    <button class="btn btn-sm btn-danger" v-else="" disabled="">-</button>
+                                    </td>
                                     <td>{{pro.product_price}}</td>
                                     <td>{{pro.sub_total}}</td>
-                                    <td><a href="#" class="btn btn-sm btn-primary">X</a></td>
+                                    <td><a @click="removeItem(pro.id)" class="btn btn-sm btn-primary"><font color="ffffff">X</font></a></td>
                                 </tr>
 
 
@@ -133,7 +137,7 @@
 
                                 <div class="row">
                                         <div class="col-lg-3 col-md-3 col-sm-6 col-6" v-for="getproduct in getfilterSearch" :key="getproduct.id">
-                                        <a href="#">
+                                        <button class="btn btn-sm" @click.prevent="AddToCart(getproduct.id)">
                                         <div class="card" style="width: 8.6rem; margin-bottom:5px;">
                                         <img :src="getproduct.image" id="em_photo" class="card-img-top">
                                         <div class="card-body">
@@ -143,7 +147,7 @@
 
 
                                         </div>
-                                        </div></a>
+                                        </div></button>
 
                                     </div>
                                     </div>
@@ -180,13 +184,17 @@ export default{
     },
     mounted(){
         this.cartProduct();
+        Reload.$on('AfterAdd',()=>{
+            this.cartProduct();
+        })
     },
 
      created(){
         this.allProduct();
         this.allCategory();
         this.allCustomer();
-        this.cartProduct();
+
+
     },
 
     data(){
@@ -221,6 +229,7 @@ export default{
         AddToCart(id){
            axios.get('/api/addToCart/'+id)
             .then(()=>{
+                Reload.$emit('AfterAdd')
                 Notification.cart_success()
             })
             .catch()
@@ -229,6 +238,33 @@ export default{
          cartProduct(){
             axios.get('/api/cart/product/')
             .then(({data})=>(this.carts = data))
+            .catch()
+        },
+
+        removeItem(id){
+            axios.get('/api/remove/cart/'+id)
+            .then(()=>{
+                Reload.$emit('AfterAdd')
+                Notification.cart_delete()
+            })
+            .catch()
+        },
+
+        increment(id){
+            axios.get('/api/increment/'+id)
+            .then(()=>{
+                Reload.$emit('AfterAdd')
+                Notification.success()
+            })
+            .catch()
+        },
+
+         decrement(id){
+            axios.get('/api/decrement/'+id)
+            .then(()=>{
+                Reload.$emit('AfterAdd')
+                Notification.success()
+            })
             .catch()
         },
 
