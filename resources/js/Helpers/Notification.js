@@ -10,6 +10,16 @@ class Notification {
         }).show();
     }
 
+    cart_success(){
+        new Noty({
+            type:'success',
+            layout:'topRight',
+            text: 'Successfully Add to Cart!',
+            timeout:1000,
+
+        }).show();
+    }
+
     alert(){
         new Noty({
             type:'alert',
