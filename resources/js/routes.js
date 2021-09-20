@@ -55,6 +55,13 @@ let editstock =require('./components/product/edit-stock.vue').default;
 //Pos Component
 let pos =require('./components/pos/pointofsale.vue').default;
 
+//Order component
+ let order =require('./components/order/order.vue').default;
+ let vieworder =require('./components/order/vieworder.vue').default;
+ let searchorder =require('./components/order/searchorder.vue').default;
+
+
+
 
 
 export const routes = [
@@ -112,6 +119,12 @@ export const routes = [
 
     //POS routes
     { path: '/pos', component: pos,name:'pos'},
+
+    //Order routes
+    { path: '/order', component: order,name:'order'},
+    { path: '/view-order/:id', component: vieworder,name:'view-order'},
+    { path: '/searchorder', component: searchorder,name:'searchorder'},
+
 
 
     ]

@@ -9,6 +9,7 @@ use App\Http\Controllers\SalaryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 
 Route::group([
 
@@ -48,3 +49,15 @@ Route::get('/cart/product',[CartController::class, 'CartProduct']);
 Route::get('/remove/cart/{id}',[CartController::class, 'removeCart']);
 Route::get('/increment/{id}',[CartController::class, 'increment']);
 Route::get('/decrement/{id}',[CartController::class, 'decrement']);
+
+//vat routes
+Route::get('/vats',[CartController::class, 'Vats']);
+Route::post('/orderdone',[CartController::class, 'orderDone']);
+
+//Order Routes
+Route::get('/orders',[OrderController::class, 'todayOrder']);
+
+Route::get('/order/details/{id}',[OrderController::class, 'OrderDetails']);
+Route::get('/order/orderdetails/{id}',[OrderController::class, 'OrderDetailsAll']);
+
+Route::get('/search/order',[OrderController::class, 'SearchOrderDate']);

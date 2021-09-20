@@ -54,17 +54,17 @@
                             </div>
                             <div class="card-footer">
                             <ul class="list-group">
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Total Quantity: <strong>50</strong></li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Sub Total: <strong>560 $</strong></li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Vat: <strong>35 %</strong></li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">Total : <strong>5060 $</strong></li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">Total Quantity: <strong>{{qty}}</strong></li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">Sub Total: <strong>{{subtotal}} $</strong></li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">Vat: <strong>{{vats.vat}} %</strong></li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">Total : <strong>{{subtotal*vats.vat/100 + subtotal}} $</strong></li>
                             </ul>
                             <br>
 
-                            <form >
+                            <form @submit.prevent="orderdone">
                                 <label for="">Customer Name</label>
                                 <select class="form-control" v-model="customer_id" name="" id="">
-                                    <option v-for="customer in customers">{{customer.name}}</option>
+                                    <option :value="customer.id" v-for="customer in customers">{{customer.name}}</option>
 
                                 </select>
                                 <label for="">Pay</label>
@@ -73,7 +73,7 @@
                                 <input type="text" name="" class="form-control" required="" id="" v-model="due">
 
                                 <label for="">Pay By</label>
-                                <select class="form-control" v-model="customer_id" name="" id="">
+                                <select class="form-control" v-model="payby" name="" id="">
                                     <option value="Handcash">Hand Cash</option>
                                     <option value="Cheaque">Cheaque</option>
                                     <option value="Giftcard">Gift Card</option>
@@ -187,6 +187,7 @@ export default{
         Reload.$on('AfterAdd',()=>{
             this.cartProduct();
         })
+        this.vat();
     },
 
      created(){
@@ -199,6 +200,10 @@ export default{
 
     data(){
         return{
+            customer_id:'',
+            pay:'',
+            due:'',
+            payby:'',
             products:[],
             categories:[],
             getproducts:[],
@@ -206,7 +211,8 @@ export default{
             getsearchTerm:'',
             customers:'',
             errors:'',
-            carts:[]
+            carts:[],
+            vats:''
         }
     },
     computed:{
@@ -215,6 +221,22 @@ export default{
           return product.product_name.match(this.searchTerm)
 
         })
+      },
+
+      qty(){
+          let sum= 0;
+          for(let i=0; i<this.carts.length; i++){
+              sum +=(parseFloat(this.carts[i].pro_quantity));
+          }
+          return sum;
+      },
+
+      subtotal(){
+          let sum= 0;
+          for(let i=0; i<this.carts.length; i++){
+              sum +=(parseFloat(this.carts[i].pro_quantity)*parseFloat(this.carts[i].product_price));
+          }
+          return sum;
       },
       getfilterSearch(){
         return this.getproducts.filter(getproduct=>{
@@ -266,6 +288,31 @@ export default{
                 Notification.success()
             })
             .catch()
+        },
+
+        vat(){
+           axios.get('/api/vats/')
+            .then(({data})=>(this.vats = data))
+            .catch()
+        },
+
+        orderdone(){
+            let total = this.subtotal*this.vats.vat/100 + this.subtotal;
+            let data ={
+                qty:this.qty,
+                subtotal:this.subtotal,
+                customer_id:this.customer_id,
+                payby:this.payby,
+                pay:this.pay,
+                due:this.due,
+                vat:this.vats.vat,
+                total:total }
+
+            axios.post('api/orderdone',data)
+            .then(()=>{
+                Notification.success()
+                this.$router.push({name:'home'})
+            })
         },
 
         allProduct(){
