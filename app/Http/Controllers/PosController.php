@@ -17,79 +17,43 @@ class PosController extends Controller
 
         return response()->json($product);
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+
+    public function TodaySell()
     {
-        //
+        $date =date('d/m/Y');
+        $sell = DB::table('orders')->where('order_date',$date)->sum('total');
+
+        return response()->json($sell);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function TodayIncome()
     {
-        //
+        $date =date('d/m/Y');
+        $income = DB::table('orders')->where('order_date',$date)->sum('pay');
+
+        return response()->json($income);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function TodayDue()
     {
-        //
+        $date =date('d/m/Y');
+        $due = DB::table('orders')->where('order_date',$date)->sum('due');
+
+        return response()->json($due);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function TodayExpense()
     {
-        //
+        $date =date('d/m/Y');
+        $expense = DB::table('expenses')->where('expense_date',$date)->sum('amount');
+
+        return response()->json($expense);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function StockOut()
     {
-        //
-    }
+        $product = DB::table('products')->where('product_quantity','<','1')->get();
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return response()->json($product);
     }
 }
